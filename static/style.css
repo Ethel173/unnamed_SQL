@@ -1,0 +1,34 @@
+.noti{
+    width: 300px;
+    margin: auto;
+}
+.center{
+    text-align: center;
+}
+.no_bottom{
+    margin-bottom: 0px;
+}
+.div{
+    border: 1px solid red;
+}
+.bg_y{
+    background-color :rgb(235, 180, 0);
+}
+
+.togg_on{
+    display: block;
+    visibility: visible;
+}
+
+.togg_off{
+    display: none;
+    visibility: hidden;
+}
+
+input{
+    border: 1px solid #00b7ff;
+}
+.sticky_alert{
+    position: sticky;
+    top: 55px;
+}
