@@ -69,9 +69,9 @@ var generator = {
     },
 
     selbox_append: function(pos,append_me){
-        console.log('in funct: '+ append_me)
+        //console.log('in funct: '+ append_me)
         if(Array.isArray(append_me)){
-            console.log('in array: '+ append_me)
+            //console.log('in array: '+ append_me)
             for (var selection = 0; selection <= (append_me.length-1);selection++){
                 var option = document.createElement("option");
                 /*    
@@ -110,24 +110,24 @@ var table = {
     },
 
     active : {
-            prefix:'tab_',
             counter:2,
-            "tab_1": {
+            saved_counter:2,
+            1: {
                 name: "TT1",
                 counter:1,
                 raw: [
                     "T1F1"
                 ],
-                packed: "TT1.T1F1,"
+                packed: "TT1.T1F1 "
             },
-            "tab_2": {
+            2: {
                 name: "TT2",
                 counter:2,
                 raw: [
                     "T2F1",
                     "T2F2"
                 ],
-                packed: "TT2.T2F1,TT2.T2F1,"
+                packed: "TT2.T2F1 TT2.T2F1 "
             }
     },
 
@@ -164,16 +164,6 @@ var table = {
             payload =`table ${table.active.counter} ${table.content_template.name_text}`
             )
 
-        /*
-        var new_tab_text = document.createElement("p");
-        new_tab_text.setAttribute("id", `tab_${table.active.counter}_name_label`)
-        new_tab_text.setAttribute("class", `col`)
-        //add text to label
-        var text = document.createTextNode(`table ${table.active.counter} ${table.content_template.name_text}`)
-        new_tab_text.appendChild(text)
-        //add the label to page
-        document.getElementById(`tab_${table.active.counter}_div_row`).appendChild(new_tab_text)
-        */
 
         //create name input field
         generator.generic_gen(
@@ -186,15 +176,6 @@ var table = {
                 "placeholder":`table ${table.active.counter} name`,
                 "type":'text'
             })
-        /*
-        var new_tab = document.createElement("input");
-        new_tab.setAttribute("id", `tab_${table.active.counter}_name`)
-        new_tab.setAttribute("placeholder", `table ${table.active.counter} name`)
-        new_tab.setAttribute("class", `col`)
-        new_tab.setAttribute("value", '')
-        new_tab.setAttribute("type", 'text')
-        document.getElementById(`tab_${table.active.counter}_div_row`).appendChild(new_tab)
-        */
         
         //create new label
         generator.node_gen(
@@ -206,17 +187,7 @@ var table = {
             },
             payload =`table ${table.active.counter} ${table.content_template.col_text}`
             )
-        /*
-        var new_col_text = document.createElement("p");
-        new_col_text.setAttribute("id", `tab_${table.active.counter}_name_label`)
-        new_col_text.setAttribute("class", `col`)
-        //add text to label
-        var text = document.createTextNode(`table ${table.active.counter} ${table.content_template.col_text}`)
-        new_col_text.appendChild(text)
-        //add the label to page
-        document.getElementById(`tab_${table.active.counter}_div_row`).appendChild(new_col_text)
-        */
-
+       
         //create col input field
         generator.generic_gen(
             `tab_${table.active.counter}_div_row`,
@@ -267,7 +238,10 @@ var table = {
     },
 
     save:function(){
-        for (var i = 1; i <= table.active.counter; i++){
+        table.active.saved_counter = table.active.counter
+        console.log("SAV "+table.active.counter )
+        //CHANGE ME BACK TO 1 WHEN DONE WITH TEST TABLES
+        for (var i = 3; i <= table.active.counter; i++){
             var name = document.getElementById(`tab_${i}_name`).value
             var cols = document.getElementById(`tab_${i}_col`).value
 
@@ -285,11 +259,15 @@ var table = {
             var raw_cols = []
             for (var j = 0; j <= col_split.length-1;j++){
                 raw_cols.push(col_split[j])
-                built_cols = built_cols + name+'.'+ col_split[j]+','
+                built_cols = built_cols + name+'.'+ col_split[j]+' '
             }
-            table.active[`tab_${i}`] = {'name' : name, 'raw':raw_cols,'packed': built_cols,}
+            table.active[`${i}`] = {
+                name : name,
+                counter:j,
+                raw:raw_cols,
+                packed: built_cols,}
         }
-        console.log(table.active)
+        console.log("active tabs",table.active)
     }
 }
 
@@ -309,11 +287,10 @@ var link = {
 
     add: function() {
         //increment counter
-        link['active']['counter'] += 1
+        link.active.counter += 1
         //console.log("main: ",control)
 
         //create new div
-
         generator.generic_gen(
             pos ="link_content",
             type ='div',
@@ -322,12 +299,6 @@ var link = {
                 "class": `container text-center`
             })
         
-        /*
-        var new_link_div = document.createElement("div");
-        new_link_div.setAttribute("id", `link_${link['active']['counter']}_div`)
-        new_link_div.setAttribute("class", `container text-center`)
-        document.getElementById("link_content").appendChild(new_link_div)
-        */
         
         //create new row
         generator.generic_gen(
@@ -337,12 +308,7 @@ var link = {
                 "id": `link_${link['active']['counter']}_div_row`,
                 "class": `row`,
             })
-        /*
-        var new_link_div_row = document.createElement("div");
-        new_link_div_row.setAttribute("id", `link_${link['active']['counter']}_div_row`)
-        new_link_div_row.setAttribute("class", `row`)
-        document.getElementById(`link_${link['active']['counter']}_div`).appendChild(new_link_div_row)
-        */
+
         //create new label
         generator.node_gen(
             pos = `link_${link['active']['counter']}_div_row`,
@@ -353,19 +319,10 @@ var link = {
             },
             payload =`${link.content_template.link_name} ${link['active']['counter']}`
             )
-        /*
-        var new_link_text = document.createElement("p");
-        new_link_text.setAttribute("id", `link_${link['active']['counter']}_name_label`)
-        new_link_text.setAttribute("class", `col`)
-        //add text to label
-        var text = document.createTextNode(`${link.content_template.link_name} ${link['active']['counter']}`)
-        new_link_text.appendChild(text)
-        //add the label to page
-        document.getElementById(`link_${link['active']['counter']}_div_row`).appendChild(new_link_text)
-        */
+
         //create new input
 
-        for (var table_counter=1; table_counter <= table.active.counter;table_counter++){
+        for (var table_counter=1; table_counter <= 2;table_counter++){
         //gen table box
         generator.selbox_gen(
             {
@@ -410,7 +367,7 @@ var link = {
         }
         //logic
         work.remove()
-        link['active']['counter'] -= 1
+        link.active.counter -= 1
     },
 
     refresh: function(id){
@@ -421,17 +378,19 @@ var link = {
             )
     },
     populate: function(pos){
-        for(var tab_selection = 1; tab_selection <= table.active.counter;tab_selection++){
-            var prefix = table.active.prefix+tab_selection
-            console.log("COUNTER"+JSON.stringify(prefix))
-            console.log("COUNTER"+JSON.stringify(table.active[prefix]))
+        for(var tab_selection = 1; tab_selection <= table.active.saved_counter;tab_selection++){
+            /*console.log("POPULATE"+JSON.stringify(tab_selection))
+            console.log("POPULATE"+JSON.stringify(table.active[tab_selection]))
+            console.log("POPULATE"+JSON.stringify(table.active[tab_selection].raw))
+            */
+            for(var sub_sel =0; sub_sel < table.active[tab_selection].raw.length;sub_sel++){
 
-            for(var sub_sel in table.active[prefix].raw){
-                console.log("key "+table.active[prefix].raw[sub_sel])
+                //console.log("populate key "+table.active[tab_selection].raw[sub_sel])
                 var option = document.createElement("option")
-                option.value = table.active[prefix].raw[sub_sel]
-                option.text = table.active[prefix].raw[sub_sel] +" (" + table.active[prefix].name + ")"
-            
+                option.value = table.active[tab_selection].raw[sub_sel]
+                option.text = table.active[tab_selection].raw[sub_sel] +" (" + table.active[tab_selection].name + ")"
+                //console.log("POPULATE VAL",option.value)
+
             /*for(var sub_sel = 1; sub_sel <= table.active[prefix].counter;sub_sel++){
                 var option = document.createElement("option")
                 option.value = table.active.prefix['raw'][sub_sel]
@@ -451,7 +410,7 @@ var link = {
 
     function togg(intake){
         var toggle = document.getElementById(intake+'_chunk')
-        console.log(toggle)
+        console.log("toggle"+ toggle)
         if (toggle.className == 'togg_on')
             {toggle.className = 'togg_off'}
         else
