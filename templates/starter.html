@@ -17,7 +17,7 @@
 </head>
 
 //table.add(),table.add()
-<body onload="">
+<body onload="link.add()">
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
@@ -102,8 +102,10 @@
                 <hr>
                 <!-- change Links -->
                 <div class="row">
-                    <button type='button' class='col btn btn-primary' name='add_link_bttn' onclick="link.add()">Add New Link</button>
-                    <button type='button' class='col btn btn-secondary' name='rem_link_bttn' onclick="link.remove()">Remove Last Link</button>
+                    <button type='button' class='col btn btn-success' name='adj_tables_counter_bttn' onclick="link.add()">Add New Table</button>
+                    <button type='button' class='col btn btn-danger' name='adj_tables_counter_bttn' onclick="link.remove()">Remove Last Table</button>
+                    <button type='button' class='col btn btn-info' name='adj_tables_counter_bttn' onclick="togg('link')">Toggle show Tables</button>
+                    <button type='button' class='col btn btn-success' name='adj_tables_counter_bttn' onclick="link.refresh()">save and refresh</button>
                 </div>
                 <hr>
                 <!--end changeLinks-->

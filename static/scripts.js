@@ -50,24 +50,24 @@ var generator = {
             generator.selbox_not_mandatory(atts['id'])
         }
     },
-
+    //takes the selbox itself
     selbox_gen_placeholder: function(pos)
     {
         //console.log('position: '+pos)
         var option = document.createElement("option");
-        option.value = generator.selbox_placeholder
+        option.value = generator.selbox_none
         option.hidden = true
         option.text = generator.selbox_placeholder
         document.getElementById(pos).appendChild(option);
     },
-
+    //takes the selbox itself
     selbox_not_mandatory: function(pos){
         var option = document.createElement("option");
         option.value = generator.selbox_none
         option.text = generator.selbox_none
         document.getElementById(pos).appendChild(option);
     },
-
+    //takes the selbox itself
     selbox_append: function(pos,append_me){
         //console.log('in funct: '+ append_me)
         if(Array.isArray(append_me)){
@@ -86,9 +86,9 @@ var generator = {
         }
         },
 
-    selbox_refresh:function(pos,placeholder=true,mandatory=false,data){
+        ///wtf am i doing here
+    selbox_init:function(pos,placeholder=true,mandatory=false,data){
         //alert('refresh:' +pos)
-        var work = document.getElementById(pos).innerHTML =''
         if (placeholder){
             generator.selbox_gen_placeholder(pos)
         }
@@ -199,17 +199,7 @@ var table = {
                 "value":'',
                 "placeholder":table.content_template.col_placeholder,
             })
-        /*
-        var new_tab_col = document.createElement("input");
-        new_tab_col.setAttribute("id", `tab_${table.active.counter}_col`)
-        new_tab_col.setAttribute("class", `col`)
-        new_tab_col.setAttribute("type", `text`)
-        new_tab_col.setAttribute("value", '')
-        new_tab_col.setAttribute("placeholder", table.content_template.col_placeholder)
-        document.getElementById(`tab_${table.active.counter}_div_row`).appendChild(new_tab_col)
-        //add entry to active_Tables
-        //active_tables[`tab_${table.active.counter}`] = {'name' : '', 'cols':''}
-        */
+
 
     },
 
@@ -237,7 +227,10 @@ var table = {
         table.active.counter -=1
     },
 
+
+    //todo its saving delted table entries
     save:function(){
+
         table.active.saved_counter = table.active.counter
         console.log("SAV "+table.active.counter )
         //CHANGE ME BACK TO 1 WHEN DONE WITH TEST TABLES
@@ -276,13 +269,14 @@ var link = {
 
     content_template: {
         link_text : "(Colum A, Colum B)",
-        link_name : "Link",
+        link_name : "Join",
     },
 
     active : {
-        prefix:'link_',
-        "counter":0
+        counter:0
         },
+
+    selected_links:{},
 
 
     add: function() {
@@ -331,7 +325,7 @@ var link = {
             },
             `link_${link['active']['counter']}_div_row`)
             //gen sel 1
-            generator.selbox_refresh(
+            generator.selbox_init(
                 pos = `link_${link['active']['counter']}_table${table_counter}`,
                 placeholder=true,
                 mandatory=false,
@@ -340,16 +334,6 @@ var link = {
             link.populate(`link_${link['active']['counter']}_table${table_counter}`)
         }
 
-        //placeholder test
-        generator.selbox_refresh(
-            pos = `link_${link['active']['counter']}_table1`,
-            placeholder=true,
-            mandatory=false,
-            data=table.active
-        )
-        link.populate(`link_${link['active']['counter']}_table1`)
-
-        
         //create TYPE select box
         generator.selbox_gen({'id':`link_${link['active']['counter']}_sel`,"class": `col`},`link_${link['active']['counter']}_div_row`,placeholder=false,mandatory=true)
         //populate TYPE select box
@@ -360,24 +344,53 @@ var link = {
     remove: function() {
         //populate
         var work = document.getElementById(`link_${link['active']['counter']}_div`)
-        var work_name = document.getElementById(`link_${link['active']['counter']}_name`)
-        //check
-        if (work_name.value != ''){
-            return alert(`Link ${link['active']['counter']} 'name' field has text`)
+        var table_1 = document.getElementById(`link_${link['active']['counter']}_table1`)
+        var table_2 = document.getElementById(`link_${link['active']['counter']}_table2`)
+        //checks
+        if (table_1.value != generator.selbox_none){
+            return alert(`${link.content_template.link_name} ${link['active']['counter']}, field 1 has a selection`)
+        }
+        if (table_2.value != generator.selbox_none){
+            return alert(`${link.content_template.link_name} ${link['active']['counter']}, field 2 has a selection`)
         }
         //logic
         work.remove()
         link.active.counter -= 1
     },
 
-    refresh: function(id){
-        generator.selbox_refresh(
-            id,
-            placeholder=true,
-            mandatory=false,
-            )
+    refresh: function(){
+        //clear
+        link.selected_links={}
+
+        for (var i=1; i <= link.active.counter;i++)
+        {
+            //console.log(`tried refershing link_${i}`)
+            for (var j=1; j <= 2;j++){
+                //append
+                selected = document.getElementById(`link_${i}_table${j}`)
+                //console.log('picked ', selected.value)
+                prebuild ="link_"+i+"_table"+j
+
+                //add link entry
+                link.selected_links[prebuild] = selected.value
+
+                link.repopulate_handler(
+                    id = `link_${i}_table${j}`,
+                    placeholder=true,
+                    mandatory=false,
+                    selections = link.selected_links,
+                    )
+                    //console.log(`tried refershing table${i},${j}`)
+                    //console.log(`added tables`,link.selected_links)
+                }
+            
+        }
+        //console.log("SELLINKS ",link)
     },
-    populate: function(pos){
+    //takes the selbox itself
+    populate: function(pos,selections=[]){
+        console.log("SEL CHECK",selections)
+
         for(var tab_selection = 1; tab_selection <= table.active.saved_counter;tab_selection++){
             /*console.log("POPULATE"+JSON.stringify(tab_selection))
             console.log("POPULATE"+JSON.stringify(table.active[tab_selection]))
@@ -388,21 +401,38 @@ var link = {
                 //console.log("populate key "+table.active[tab_selection].raw[sub_sel])
                 var option = document.createElement("option")
                 option.value = table.active[tab_selection].raw[sub_sel]
+
+                //handles selected entry
+                //i hate this
+                if (selections.length!=0 && selections[pos] != "None" && selections[pos] == table.active[tab_selection].raw[sub_sel]){
+                    //console.log("SEL CHECKIF 0",selections)
+                    //console.log("SEL CHECKIF 2",option)
+                    option.selected = 'selected'
+                }
+
                 option.text = table.active[tab_selection].raw[sub_sel] +" (" + table.active[tab_selection].name + ")"
                 //console.log("POPULATE VAL",option.value)
 
-            /*for(var sub_sel = 1; sub_sel <= table.active[prefix].counter;sub_sel++){
-                var option = document.createElement("option")
-                option.value = table.active.prefix['raw'][sub_sel]
-                option.text = table.active.prefix['raw'][sub_sel]
-            */
-            //console.log("key "+i)
-            //console.log("bal "+atts[i])
-            //new_data.setAttribute(`${[i]}`, [atts[i]])
             document.getElementById(pos).appendChild(option);
             }
         }
+    },
+
+    repopulate_handler:function(pos,placeholder=false,mandatory=false,selections=[]){
+        console.log("REPOP caught",selections)
+        console.log("repop cleared:",pos)
+        document.getElementById(pos).innerHTML=''
+
+        //alert('refresh:' +pos)
+        if (placeholder){
+            generator.selbox_gen_placeholder(pos)
+        }
+        if (!mandatory){
+            generator.selbox_not_mandatory(pos)
+        }
+        link.populate(pos,selections)
     }
+    
 }
 
 
