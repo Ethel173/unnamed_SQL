@@ -16,8 +16,7 @@
 
 </head>
 
-//table.add(),table.add()
-<body onload="link.add()">
+<body onload="table.add(),link.add(),act.add()">
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
@@ -58,7 +57,7 @@
 
     <div class = "container">
         
-        <div>
+        <div id="output">
             OUTPUT: {{final}}
         </div>
         <hr>
@@ -68,7 +67,7 @@
             <div>
                 <h1>Tables</h1>
                 <h1>REMEMBER YOU HAVE 2 TEST TABLES LOADED</h1>
-                <h1>SO THESE ARE BLANK</h1>
+                <h1>SO THIS ARE NUMBER 3</h1>
                 <p class="no_bottom bg_y">minimum: 1 table</p>
                 <p class="no_bottom bg_y">minimum: 1 colum</p>
                 <!-- change tables -->
@@ -98,6 +97,8 @@
         <div>
             <div>
                 <h1>Links</h1>
+                <h1>REMEMBER YOU HAVE 2 TEST LINK LOADED</h1>
+                <h1>SO THIS ARE NUMBER 3</h1>
                 <p class="no_bottom bg_y">minimum: 0</p>
                 <hr>
                 <!-- change Links -->
@@ -117,6 +118,33 @@
                 </div>
                 <hr>
                 <!--end Links content-->
+            </div>
+        </div>
+        <!--end Links-->
+
+        <!--ACT-->
+        <div>
+            <div>
+                <h1>ACTs</h1>
+                <p class="no_bottom bg_y">minimum: 1</p>
+                <hr>
+                <!-- change ACT -->
+                <div class="row">
+                    <button type='button' class='col btn btn-success' name='adj_tables_counter_bttn' onclick="act.add()">Add New Action</button>
+                    <button type='button' class='col btn btn-danger' name='adj_tables_counter_bttn' onclick="act.remove()">Remove Last Action</button>
+                    <button type='button' class='col btn btn-info' name='adj_tables_counter_bttn' onclick="togg('act')">Toggle show actions</button>
+                    <button type='button' class='col btn btn-success' name='adj_tables_counter_bttn' onclick="act.refresh()">save and refresh</button>
+                </div>
+                <hr>
+                <!--end changeACT-->
+
+                <!--ACT content-->
+                <div class = "togg_on" id="act_chunk">
+                    <div class = "center row"id="act_content">
+                    </div>
+                </div>
+                <hr>
+                <!--end ACT content-->
             </div>
         </div>
         <!--end Links-->

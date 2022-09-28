@@ -142,10 +142,18 @@ var table = {
         //console.log("main: ",control)
         
         //create new div
-        generator.element_gen('tab_content','div',{"id": `${table.template.id_prefix}${table.unsaved_counter}${table.template.div}`,"class": `container text-center`})
+        generator.element_gen(
+        'tab_content',
+        'div',
+        {"id": `${table.template.id_prefix}${table.unsaved_counter}${table.template.div}`,
+        "class": `container text-center`})
 
         //create new row
-        generator.element_gen(`${table.template.id_prefix}${table.unsaved_counter}${table.template.div}`,'div',{"id": `${table.template.id_prefix}${table.unsaved_counter}${table.template.div}${table.template.row}`,"class": `row`})
+        generator.element_gen(
+        `${table.template.id_prefix}${table.unsaved_counter}${table.template.div}`
+        ,'div',
+        {"id": `${table.template.id_prefix}${table.unsaved_counter}${table.template.div}${table.template.row}`,
+        "class": `row`})
 
 
        //create new label
@@ -203,44 +211,48 @@ var table = {
         var work = document.getElementById(`${table.template.id_prefix}${table.unsaved_counter}${table.template.div}`)
         var work_name = document.getElementById(`${table.template.id_prefix}${table.unsaved_counter}${table.template.name}`)
         var worl_col = document.getElementById(`${table.template.id_prefix}${table.unsaved_counter}${table.template.col}`)
-        //checks
+        //checks to prevent unintended yeets
         if (table.unsaved_counter == 1){
             return alert(`cannot remove primary table`)
         }
-
         if (work_name.value != ''){
             return alert(`table ${table.unsaved_counter} 'name' field has text`)
         }
-
         if (worl_col.value != ''){
             return alert(`table ${table.unsaved_counter} 'colums' field has text`)
         }
-        //logic
+        //rem div
         work.remove()
-            //remove entry in active_Tables
+        //remove entry in active_Tables
         delete table.saved_tables[`${table.unsaved_counter}`]
+        //update danger counter
         table.unsaved_counter -=1
+        //update saved tables
+        table.save()
         //refresh links selection
         link.refresh()
     },
 
 
-    //todo its saving delted table entries
+    //writes table data to memory
     save:function(){
         table.saved_counter = table.unsaved_counter
-        console.log("SAV "+table.unsaved_counter )
+        //console.log("SAV "+table.unsaved_counter )
         //CHANGE ME BACK TO 1 WHEN DONE WITH TEST TABLES
         for (var i = 3; i <= table.unsaved_counter; i++){
             var name = document.getElementById(`${table.template.id_prefix}${i}${table.template.name}`).value
             var cols = document.getElementById(`${table.template.id_prefix}${i}${table.template.col}`).value
-            
+        
+        //checks for empty fields
         if (name == ''){
             return alert(`table ${i} 'name' field is blank`)
         }
         if (cols == ''){
             return alert(`table ${i} 'colums' field is blank`)
         }
+        //splits for raw
         var col_split = cols.split(',')
+        //local temp loop that holds raw tables before pushing to it
         var raw_cols = []
         for (var j = 0; j <= col_split.length-1;j++){
             raw_cols.push(col_split[j])
@@ -250,7 +262,8 @@ var table = {
             raw:raw_cols,
             }
         }
-        console.log("active tab obj",table)
+        //console.log("active tab obj",table)
+
         //refresh links selection
         link.refresh()
     }
@@ -262,12 +275,27 @@ var link = {
         link_text : "(Colum A, Colum B)",
         link_name : "Join",
     },
-    active_counter:0,
-    selected_links:{},
+
+    //CLEAR ME TO 0 AFTER DONE DEBUG
+    active_counter:2,
+    selected_links:{
+        "link_1_table1": "T1F1",
+        "link_1_table2": "T2F2",
+        "link_1_sel": "RIGHT",
+        "link_2_table1": "T2F1",
+        "link_2_table2": "T2F2",
+        "link_2_sel": "FULL"
+    },
+
     add: function() {
+        //DEBUG
+        //console.log(`added tables`,link.selected_links)
+        
         //increment counter
         link.active_counter += 1
+
         //console.log("main: ",control)
+        
         //create new div
         generator.element_gen(
             pos ="link_content",
@@ -306,15 +334,6 @@ var link = {
                 },
                 `link_${link.active_counter}${table.template.div}${table.template.row}`)
 
-                //gen sel 1
-                //TODO future me try to rip me out
-                /*generator.selbox_init(
-                    pos = `link_${link.active_counter}_table${table_counter}`,
-                    placeholder=true,
-                    mandatory=false,
-                    data=table.saved_tables
-                )*/
-
                 link.populate(`link_${link.active_counter}_table${table_counter}`)
         }
         //create TYPE select box
@@ -342,10 +361,16 @@ var link = {
     },
 
     refresh: function(){
+        
+        //REMEMBER TO RENABLE ME SINCE YOU HAVE DEBUG LINKS LOADED
         //clear
-        link.selected_links={}
-        for (var i=1; i <= link.active_counter;i++)
+        //link.selected_links={}
+
+        //update all link divs
+        //CHANGE BACK TO 1 AFTER DONE WITH LOADED TABLES
+        for (var i=3; i <= link.active_counter;i++)
         {
+            //update both selections 1 and 2
             //console.log(`tried refershing link_${i}`)
             for (var j=1; j <= 2;j++){
                 //append
@@ -361,25 +386,33 @@ var link = {
                     selections = link.selected_links,
                     )
                     //console.log(`tried refershing table${i},${j}`)
-                    //console.log(`added tables`,link.selected_links)
                 }
+                link_type = document.getElementById(`link_${i}_sel`)
+                link.selected_links[`link_${i}_sel`] = link_type.value
+                console.log(`added tables`,link.selected_links)
             
         }
         //console.log("SELLINKS ",link)
     },
+
     //takes the selbox itself
+    //adds in loaded tables to selbox
     populate: function(pos,selections=[]){
-        console.log("SEL CHECK",selections)
-        console.log("SEL CHECK2",table.saved_tables)
+        //console.log("SEL CHECK",selections)
+        //console.log("SEL CHECK2",table)
+        //console.log("SEL CHECK3",Object.keys(table.saved_tables).length)
+
 
         for(var tab_selection = 1; tab_selection <= table.saved_counter;tab_selection++){
 
             //TODO future me you have to deal with an undefined here
-            //maybe has to do with subsel
+            //past you fixed it by table.sav before refreshing????
+            //possible saved =/= unsaved counter??
+            //it just works??
             console.log("subsel1", table.saved_tables[tab_selection])
             for(var sub_sel = 0; sub_sel < table.saved_tables[tab_selection].raw.length;sub_sel++){
-                console.log("subsel2", table.saved_tables[tab_selection].raw)
-                console.log("subsel3", table.saved_tables[tab_selection].raw[sub_sel])
+                //console.log("subsel2", table.saved_tables[tab_selection].raw)
+                //console.log("subsel3", table.saved_tables[tab_selection].raw[sub_sel])
                 //console.log("populate key "+table.saved_tables[tab_selection].raw[sub_sel])
                 var option = document.createElement("option")
                 option.value = table.saved_tables[tab_selection].raw[sub_sel]
@@ -400,6 +433,7 @@ var link = {
         }
     },
 
+    //intermediate func that adds placeholders and mandatory before calling populate
     repopulate_handler:function(pos,placeholder=false,mandatory=false,selections=[]){
         //console.log("REPOP caught",selections)
         //console.log("repop cleared:",pos)
@@ -415,6 +449,68 @@ var link = {
         link.populate(pos,selections)
     }
     
+}
+
+
+var act = {
+
+    counter:0,
+    template:{
+        id_prefix: "act_",
+        content_post: "content",
+        div: "_div",
+        row: "_row",
+        col: "_col",
+        label: "_label",
+        name: "_name",
+        display_name_text : "Name",
+        display_col_text : "colums",
+        display_col_placeholder : "(CSV format)",
+    },
+
+    saved:{},
+
+    add: function(){
+        //up counter
+        act.counter +=1,
+        //new div
+        generator.element_gen(
+            pos =`${act.template.id_prefix}${act.template.content_post}`,
+            type ='div',
+            atts={
+                "id": `${act.template.id_prefix}${act.counter}${act.template.div}`,
+                "class": `container text-center`
+            }
+        )
+        //new row
+        generator.element_gen(
+            pos =`${act.template.id_prefix}${act.counter}${act.template.div}`,
+            type ='div',
+            atts={
+                "id": `${act.template.id_prefix}${act.counter}${table.template.row}`,
+                "class": `row`,
+            }
+        )
+         //create new label
+        generator.node_gen(
+            pos = `${act.template.id_prefix}${act.counter}${table.template.row}`,
+            type = 'p',
+            atts = {
+                "id": `${act.template.id_prefix}${act.counter}${table.template.row}${table.template.label}`,
+                "class": `col`
+            },
+            payload =`${act.template.display_name_text} ${act.counter}`
+        )
+    },
+    remove:function(){
+
+    },
+    save:function(){
+
+    },
+    refresh:function(pos,saved){
+
+    }
 }
 
 
