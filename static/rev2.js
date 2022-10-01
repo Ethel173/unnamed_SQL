@@ -15,10 +15,10 @@
     }
 
     var table = {
-        repop : [],
-        
-        data_pop_test: function(arg){
-            table.repop.push(arg)
+        saved_cols : [],
+
+        pop_cols: function(arg){
+            table.saved_cols.push(arg)
         }
 
     }

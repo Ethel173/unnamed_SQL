@@ -16,7 +16,7 @@
 
 </head>
 
-<body onload='table.data_pop({{bulk|safe}})'>
+<body onload='table.pop_cols({{bulk|safe}})'>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
@@ -77,7 +77,7 @@
                 <hr>
                 <div class="row">
                     <button type='button' class='col btn btn-info' name='adj_tables_counter_bttn' onclick="generic.togg('table')">Toggle show Tables</button>
-                    <button type='button' class='col btn btn-info' name='adj_tables_counter_bttn' onclick="console.log(table.repop[0][0][1])">DEBUG2</button>
+                    <button type='button' class='col btn btn-info' name='adj_tables_counter_bttn' onclick="console.log(table.saved_cols)">DEBUG2</button>
                 </div>
                 <hr>
                 <!--end changetables-->
