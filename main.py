@@ -63,6 +63,6 @@ print("TABLE BUILDER: ",tab_builder)
 def hello_world():
     if request.method == 'GET':
         table_counter = 0
-    return render_template("rev2.html",schema=names,bulk = json.dumps(tab_builder),meth = request.method,debug=True)
+    return render_template("rev2.html",schema=json.dumps(names),bulk = json.dumps(tab_builder),meth = request.method,debug=True)
         #return render_template("test.html",name = "test")
 

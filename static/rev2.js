@@ -9,16 +9,35 @@
         {toggle.className = 'togg_on'}
         
     },
-    log :function(asd){
-        console.log(asd)
+    debug:function(){
+        //console.log("names: ",table.saved_names)
+        //console.log("cols: ",table.saved_cols)
+        console.log("build: ",table.built_obj)
     }
     }
 
     var table = {
+        built_obj : [],
+        
+        /*saved_names : [],
         saved_cols : [],
 
         pop_cols: function(arg){
             table.saved_cols.push(arg)
-        }
+        },
+        pop_names: function(arg){
+            table.saved_names.push(arg)
+        },*/
+
+        map: function(names,cols){
+            table.pop_names(names)
+            table.pop_cols(cols)
+
+            for (var asd in names){
+                table.built_obj.push(names[asd])
+                table.built_obj[asd].push(cols[asd])
+            }
+            //generic.debug()
+        },
 
     }

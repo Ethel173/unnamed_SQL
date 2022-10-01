@@ -16,7 +16,7 @@
 
 </head>
 
-<body onload='table.pop_cols({{bulk|safe}})'>
+<body onload='table.map( {{schema|safe}} , {{bulk|safe}})'>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
@@ -71,13 +71,10 @@
         <div>
             <div>
                 <h1>Tables</h1>
-                <h1>REMEMBER YOU HAVE 2 TEST TABLES LOADED</h1>
-                <h1>REMOVE THOSE</h1>
                 <!-- change tables -->
                 <hr>
                 <div class="row">
                     <button type='button' class='col btn btn-info' name='adj_tables_counter_bttn' onclick="generic.togg('table')">Toggle show Tables</button>
-                    <button type='button' class='col btn btn-info' name='adj_tables_counter_bttn' onclick="console.log(table.saved_cols)">DEBUG2</button>
                 </div>
                 <hr>
                 <!--end changetables-->
