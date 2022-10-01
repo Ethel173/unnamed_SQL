@@ -30,8 +30,8 @@
         },*/
 
         map: function(names,cols){
-            table.pop_names(names)
-            table.pop_cols(cols)
+            //table.pop_names(names)
+            //table.pop_cols(cols)
 
             for (var asd in names){
                 table.built_obj.push(names[asd])
@@ -40,4 +40,18 @@
             //generic.debug()
         },
 
+        add:function(){
+            console.log("try add template")
+            var temp = document.getElementById("table_template")
+            var clon = temp.content.cloneNode(true)
+            document.getElementById("tab_content").appendChild(clon)
+        },
+
+
+        startup:function(names,cols){
+            table.map(names,cols)
+            for (item in names){
+                table.add()
+            }
+        }
     }
