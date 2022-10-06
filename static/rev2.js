@@ -81,10 +81,12 @@
     add: function(){
         let templateInstance = document.getElementById("link_template");
         let clone = document.importNode(templateInstance .content, true);
-        clone.querySelector('div.row').setAttribute("id", "link"+link.unsafe_counter)
+        clone.querySelector('div.row').setAttribute("id", "link_"+link.unsafe_counter)
         //past you is being efficient
-        clone.querySelector('div.col').innerHTML = "link"+link.unsafe_counter
+        //display text
+        clone.querySelector('div.col').innerHTML = "link "+link.unsafe_counter
         
+        //setup on change event
         clone.querySelector('select[id=sel_1_name]').setAttribute("onchange", "link.pop_sub_table("+"'"+link.unsafe_counter+"','sel_1_data')")
         clone.querySelector('select[id=sel_2_name]').setAttribute("onchange", "link.pop_sub_table("+"'"+link.unsafe_counter+"','sel_2_data')")
 
@@ -118,5 +120,21 @@
         console.log("works")
         console.log(invoker)
         console.log(subtab)
+
+        var main_table = document.getElementById("link_"+invoker)
+        console.log("MAIN TABLE ")
+        console.log(main_table)
+
+        //var value = main_table.options[main_table.selectedIndex].value
+        //console.log("VALUE ")
+        //console.log(value)
+        console.log("select[id="+subtab+"]")
+        var subtable = main_table.querySelector("select[id="+subtab+"]")
+        console.log("SUB TABLE ")
+        console.log(subtable)
+        subtable.removeAttribute("disabled")
+
+
+        //todo populate sub table
     }
     }
