@@ -27,11 +27,18 @@
 
 <template id="link_template">
         <div class="row">
-            <select class = "col" id = "sel1">
-                <option value =""disabled>SELECT ME</option>
+            <div class ="col"></div>
+            <select class = "col" id = "sel_1_name">
+                <option value =""disabled selected hidden>SELECT ME</option>
             </select>
-            <select class = "col" id = "sel2">
-                <option value ="" disabled>SELECT ME</option>
+            <select class = "col" id = "sel_1_data" disabled>
+                <option value =""disabled selected hidden>SELECT TABLE 1</option>
+            </select>
+            <select class = "col" id = "sel_2_name">
+                <option value =""disabled selected hidden>SELECT ME</option>
+            </select>
+            <select class = "col" id = "sel_1_data" disabled>
+                <option value ="" disabled selected hidden>SELECT TABLE 2</option>
             </select>
             <select class = "col">
                 <option value ="INNER">INNER</option>
@@ -46,7 +53,7 @@
 
 
 
-<body onload='table.startup( {{schema|safe}} , {{bulk|safe}})'>
+<body onload='generic.startup( {{schema|safe}} , {{bulk|safe}})'>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
@@ -100,7 +107,9 @@
         <!--tables-->
         <div>
             <div>
-                <h1>Tables</h1>
+                <h1>Table viewer</h1>
+                <br>
+                displays information of acessable tables
                 <!-- change tables -->
                 <hr>
                 <div class="row">
@@ -141,7 +150,7 @@
 
                 <!--Links content-->
                 <div class = "togg_on" id="link_chunk">
-                    <div class = "center row"id="link_content">
+                    <div class = "center row card card-body"id="link_content">
                     </div>
                 </div>
                 <hr>

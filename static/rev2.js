@@ -13,23 +13,20 @@
         //console.log("names: ",table.saved_names)
         //console.log("cols: ",table.saved_cols)
         console.log("build: ",table.built_obj)
+    },
+    startup:function(names,cols){
+        table.map(names,cols)
+        for (item in names){
+            table.add()
+        }
+        link.add()
+
     }
     }
 
     var table = {
         unsafe_counter:0,
         built_obj : [],
-        
-        /*saved_names : [],
-        saved_cols : [],
-
-        pop_cols: function(arg){
-            table.saved_cols.push(arg)
-        },
-        pop_names: function(arg){
-            table.saved_names.push(arg)
-        },*/
-
         map: function(names,cols){
             //table.pop_names(names)
             //table.pop_cols(cols)
@@ -64,7 +61,7 @@
 
             //past you has decided to go down the rabbit hole your not welcome
             for (var item = 0; item < table.built_obj[table.unsafe_counter][1].length;item ++){
-                console.log(table.built_obj[table.unsafe_counter][1][item][1])
+                //console.log(table.built_obj[table.unsafe_counter][1][item][1])
                 var option = document.createElement("option");
                 option.value = table.built_obj[table.unsafe_counter][1][item][1]
                 option.text = table.built_obj[table.unsafe_counter][1][item][1]
@@ -75,13 +72,51 @@
             selbox_div.appendChild(selectbox); 
             clone.querySelector('div.row').appendChild(selbox_div); 
             document.getElementById("tab_content").appendChild(clone); 
-        },
-
-
-        startup:function(names,cols){
-            table.map(names,cols)
-            for (item in names){
-                table.add()
-            }
         }
+    }
+
+    var link = {
+        unsafe_counter:0,
+
+    add: function(){
+        let templateInstance = document.getElementById("link_template");
+        let clone = document.importNode(templateInstance .content, true);
+        clone.querySelector('div.row').setAttribute("id", "link"+link.unsafe_counter)
+        //past you is being efficient
+        clone.querySelector('div.col').innerHTML = "link"+link.unsafe_counter
+        
+        clone.querySelector('select[id=sel_1_name]').setAttribute("onchange", "link.pop_sub_table("+"'"+link.unsafe_counter+"','sel_1_data')")
+        clone.querySelector('select[id=sel_2_name]').setAttribute("onchange", "link.pop_sub_table("+"'"+link.unsafe_counter+"','sel_2_data')")
+
+        //why the fuck does this not work???
+        //lazy dupe fix since it works
+    for (var item = 0; item < table.built_obj.length;item ++){
+        console.log(table.built_obj[item][0])
+        var option = document.createElement("option");
+        option.value = table.built_obj[item][0]
+        option.text = table.built_obj[item][0]
+        //option.setAttribute("onclick","console.log('it works')")
+        //clone.querySelector('select[id=sel_2_name]').appendChild(option);
+        clone.querySelector('select[id=sel_1_name]').appendChild(option);
+    }
+    for (var item = 0; item < table.built_obj.length;item ++){
+        console.log(table.built_obj[item][0])
+        var option = document.createElement("option");
+        option.value = table.built_obj[item][0]
+        option.text = table.built_obj[item][0]
+        clone.querySelector('select[id=sel_2_name]').appendChild(option);
+        //clone.querySelector('select[id=sel_1_name]').appendChild(option);
+    }
+
+        link.unsafe_counter++
+        document.getElementById("link_content").appendChild(clone); 
+    },
+
+    //todo
+    pop_sub_table:function(invoker,subtab)
+    {
+        console.log("works")
+        console.log(invoker)
+        console.log(subtab)
+    }
     }
