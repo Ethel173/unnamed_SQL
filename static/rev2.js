@@ -13,6 +13,7 @@
         //console.log("names: ",table.saved_names)
         //console.log("cols: ",table.saved_cols)
         console.log("build: ",table.built_obj)
+        //console.log("link: ",link.unsafe_counter)
     },
     startup:function(names,cols){
         table.map(names,cols)
@@ -87,24 +88,24 @@
         clone.querySelector('div.col').innerHTML = "link "+link.unsafe_counter
         
         //setup on change event
-        clone.querySelector('select[id=sel_1_name]').setAttribute("onchange", "link.pop_sub_table("+"'"+link.unsafe_counter+"','sel_1_data')")
-        clone.querySelector('select[id=sel_2_name]').setAttribute("onchange", "link.pop_sub_table("+"'"+link.unsafe_counter+"','sel_2_data')")
+        clone.querySelector('select[id=sel_1_name]').setAttribute("onchange", "link.pop_sub_table("+"'"+link.unsafe_counter+"','1')")
+        clone.querySelector('select[id=sel_2_name]').setAttribute("onchange", "link.pop_sub_table("+"'"+link.unsafe_counter+"','2')")
 
         //why the fuck does this not work???
-        //lazy dupe fix since it works
+        //lazy duped fix since it works
     for (var item = 0; item < table.built_obj.length;item ++){
-        console.log(table.built_obj[item][0])
+        //console.log(table.built_obj[item][0])
         var option = document.createElement("option");
-        option.value = table.built_obj[item][0]
+        option.value = item
         option.text = table.built_obj[item][0]
         //option.setAttribute("onclick","console.log('it works')")
         //clone.querySelector('select[id=sel_2_name]').appendChild(option);
         clone.querySelector('select[id=sel_1_name]').appendChild(option);
     }
     for (var item = 0; item < table.built_obj.length;item ++){
-        console.log(table.built_obj[item][0])
+        //console.log(table.built_obj[item][0])
         var option = document.createElement("option");
-        option.value = table.built_obj[item][0]
+        option.value = item
         option.text = table.built_obj[item][0]
         clone.querySelector('select[id=sel_2_name]').appendChild(option);
         //clone.querySelector('select[id=sel_1_name]').appendChild(option);
@@ -114,27 +115,60 @@
         document.getElementById("link_content").appendChild(clone); 
     },
 
-    //todo
     pop_sub_table:function(invoker,subtab)
     {
-        console.log("works")
-        console.log(invoker)
-        console.log(subtab)
+        //console.log("works")
+        //console.log(invoker)
+        //console.log(subtab)
 
         var main_table = document.getElementById("link_"+invoker)
-        console.log("MAIN TABLE ")
-        console.log(main_table)
+        // console.log("MAIN TABLE ")
+        //console.log(main_table)
 
-        //var value = main_table.options[main_table.selectedIndex].value
-        //console.log("VALUE ")
-        //console.log(value)
-        console.log("select[id="+subtab+"]")
-        var subtable = main_table.querySelector("select[id="+subtab+"]")
-        console.log("SUB TABLE ")
-        console.log(subtable)
+        //console.log("select[id=sel_"+subtab+"_name]")
+        var subname = main_table.querySelector("select[id=sel_"+subtab+"_name]")
+        //console.log("subname ")
+        //console.log(subname.value)
+
+        var subtable = main_table.querySelector("select[id=sel_"+subtab+"_data]")
+        //console.log("SUB TABLE ")
+        //console.log(subtable)
+        //depopulate all but "SELECT ME" option
+        while (subtable.options.length > 1) {
+            subtable.remove(1);
+        }
+        //check that there is a table to pull from or user chose 'None'
+        if (subname.value== '' || subname.value=="None"){
+            subtable.setAttribute("disabled","True")
+            subtable.options[0].selected = true
+            return
+        }
         subtable.removeAttribute("disabled")
 
+        for (var item = 0; item < table.built_obj[subname.value][1].length;item ++){
+            var option = document.createElement("option");
+            option.value = [subname.value,item]
+            option.text = table.built_obj[subname.value][1][item][1]
+            subtable.appendChild(option);
+        }
 
-        //todo populate sub table
+    },
+    remove: function(){
+        var main_link = document.getElementById("link_"+(link.unsafe_counter-1))
+        //console.log(main_link)
+        var sub_data = main_link.querySelector("select[id=sel_1_name]")
+        //console.log(sub_data)
+        if (sub_data.value!="None"){
+            alert("link "+(link.unsafe_counter-1)+" table 1 has data")
+            return
+        }
+        var sub_data = main_link.querySelector("select[id=sel_2_name]")
+        if (sub_data.value!="None"){
+            alert("link "+(link.unsafe_counter-1)+" table 2 has data")
+            return
+        }
+
+        main_link.remove()
+        link.unsafe_counter -= 1
     }
-    }
+}

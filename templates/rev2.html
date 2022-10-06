@@ -27,15 +27,17 @@
 
 <template id="link_template">
         <div class="row">
-            <div class ="col"></div>
+            <div class ="col">TABLE ID GOES HERE IN JS</div>
             <select class = "col" id = "sel_1_name">
-                <option value =""disabled selected hidden>SELECT ME</option>
+                <option value ="None"disabled selected hidden>SELECT ME</option>
+                <option value ="None">None</option>
             </select>
             <select class = "col" id = "sel_1_data" disabled>
                 <option value =""disabled selected hidden>SELECT TABLE 1</option>
             </select>
             <select class = "col" id = "sel_2_name">
-                <option value =""disabled selected hidden>SELECT ME</option>
+                <option value ="None"disabled selected hidden>SELECT ME</option>
+                <option value ="None">None</option>
             </select>
             <select class = "col" id = "sel_2_data" disabled>
                 <option value ="" disabled selected hidden>SELECT TABLE 2</option>
@@ -47,7 +49,6 @@
                 <option value ="FULL">FULL</option>
             </select>
         </div>
-        <hr>
 </template>
 
 
@@ -114,6 +115,7 @@
                 <hr>
                 <div class="row">
                     <button type='button' class='col btn btn-info' name='adj_tables_counter_bttn' onclick="generic.togg('table')">Toggle show Tables</button>
+                    <button type='button' class='col btn btn-info' name='adj_tables_counter_bttn' onclick="generic.debug()">DEBUG</button>
                 </div>
                 <hr>
                 <!--end changetables-->
@@ -134,14 +136,15 @@
         <div>
             <div>
                 <h1>Links</h1>
-                <h1>REMEMBER NO TEST TABLES</h1>
-                <h1>IN REV 2</h1>
+                <br>
+                create JOIN's here
+                <br>
                 <p class="no_bottom bg_y">minimum: 0</p>
                 <hr>
                 <!-- change Links -->
                 <div class="row">
                     <button type='button' class='col btn btn-success' name='adj_tables_counter_bttn' onclick="link.add()">Add New Table</button>
-                    <button type='button' class='col btn btn-danger' name='adj_tables_counter_bttn' onclick="link.remove()">Remove (NYI))</button>
+                    <button type='button' class='col btn btn-danger' name='adj_tables_counter_bttn' onclick="link.remove()">Remove Last Table</button>
                     <button type='button' class='col btn btn-info' name='adj_tables_counter_bttn' onclick="generic.togg('link')">Toggle show Tables</button>
                 </div>
                 <hr>
@@ -172,7 +175,7 @@
                     <button type='button' class='col btn btn-success' name='adj_tables_counter_bttn' onclick="act.refresh()">save and refresh</button>
                 </div>
                 <hr>
-                <!--end changeACT-->
+                <!--end change ACT-->
 
                 <!--ACT content-->
                 <div class = "togg_on" id="act_chunk">
@@ -183,7 +186,7 @@
                 <!--end ACT content-->
             </div>
         </div>
-        <!--end Links-->
+        <!--end ACT-->
 
         <button type='submit' class='col btn btn-primary' action='' method='post'>execute</button>
     </div>
