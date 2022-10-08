@@ -51,6 +51,28 @@
         </div>
 </template>
 
+<template id="act_template">
+        <div class="row">
+            <div class ="col">TABLE ID GOES HERE IN JS</div>
+            <select class = "col" id = "payload">
+                <option value ="None"disabled selected hidden>SELECT ACTION</option>
+                <option value ="None">None</option>
+                <option value ="SELECT">Print / Select</option>
+                <option value ="SELECT">update (NYI)</option>
+                <option value ="SELECT">drop (DANGER)(NYI)</option>
+            </select>
+            <select class = "col" id = "sel_name">
+                <option value ="None"disabled selected hidden>SELECT TABLE</option>
+                <option value ="None">None</option>
+            </select>
+            <select class = "col" id = "sel_data" disabled>
+                <option value =""disabled selected hidden>SELECT TABLE FIRST</option>
+            </select>
+            <input class = "col" id = "cond" disabled placeholder="SELECT ACTION FIRST">
+            </input>
+        </div>
+</template>
+
 
 
 
@@ -115,7 +137,7 @@
                 <hr>
                 <div class="row">
                     <button type='button' class='col btn btn-info' name='adj_tables_counter_bttn' onclick="generic.togg('table')">Toggle show Tables</button>
-                    <button type='button' class='col btn btn-info' name='adj_tables_counter_bttn' onclick="generic.debug()">DEBUG</button>
+                    <button type='button' class='col btn btn-success' name='adj_tables_counter_bttn' onclick="generic.debug()">DEBUG</button>
                 </div>
                 <hr>
                 <!--end changetables-->
@@ -171,15 +193,13 @@
                 <div class="row">
                     <button type='button' class='col btn btn-success' name='adj_tables_counter_bttn' onclick="act.add()">Add New Action</button>
                     <button type='button' class='col btn btn-danger' name='adj_tables_counter_bttn' onclick="act.remove()">Remove Last Action</button>
-                    <button type='button' class='col btn btn-info' name='adj_tables_counter_bttn' onclick="generic.togg('act')">Toggle show actions</button>
-                    <button type='button' class='col btn btn-success' name='adj_tables_counter_bttn' onclick="act.refresh()">save and refresh</button>
-                </div>
+                    <button type='button' class='col btn btn-info' name='adj_tables_counter_bttn' onclick="generic.togg('act')">Toggle show actions</button>                </div>
                 <hr>
                 <!--end change ACT-->
 
                 <!--ACT content-->
                 <div class = "togg_on" id="act_chunk">
-                    <div class = "center row"id="act_content">
+                    <div class = "center row card card-body"id="act_content">
                     </div>
                 </div>
                 <hr>

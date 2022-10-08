@@ -50,7 +50,7 @@ tab_builder=[]
 for table in range(len(names)):
     
     #future me look into what the fuck PRAGMA actually is
-    print("TABLE: ",names[table][0])
+    #print("TABLE: ",names[table][0])
     test = pointer.execute("PRAGMA table_info("+names[table][0]+")").fetchall()
     tab_builder.append(test)
     #this doesnt work but keep this here incase for the regex
@@ -58,7 +58,7 @@ for table in range(len(names)):
     
     #print(test)
 
-print("TABLE BUILDER: ",tab_builder)
+#print("TABLE BUILDER: ",tab_builder)
 @app.route("/",methods = ['POST', 'GET'])
 def hello_world():
     if request.method == 'GET':
