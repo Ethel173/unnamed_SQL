@@ -27,6 +27,7 @@
     }
 
     var table = {
+        format_arr:["Cid: ","Name: ","Type: ","NOT null: ","Default Value: ","Primarykey: "],
         unsafe_counter:0,
         built_obj : [],
         map: function(names,cols){
@@ -79,7 +80,7 @@
             for (var item = 0; item < table.built_obj[invoker][1][info].length-2;item ++){
                 var option = document.createElement("option");
                 option.value = "ASD"
-                option.text = table.built_obj[invoker][1][info][item+2]
+                option.text = table.format_arr[item+2] + table.built_obj[invoker][1][info][item+2]
                 target.querySelector("select[id=col_info]").appendChild(option);
             }
         }
