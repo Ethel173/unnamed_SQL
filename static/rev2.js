@@ -45,23 +45,43 @@
             clone.querySelector('div.row').id = "table_"+table.unsafe_counter;
             //add table data
             //ugly repurpose of unsafe coutner as index access
-            clone.querySelector('div.col').innerHTML = "Table : " + table.built_obj[table.unsafe_counter][0];
-            var selbox_div = document.createElement("div")
-            selbox_div.setAttribute("class", "col")
-            var selectbox = document.createElement("select")
-            selectbox.setAttribute("id", "data"+table.unsafe_counter)
+            clone.querySelector('div.col').innerHTML = table.built_obj[table.unsafe_counter][0];
+            clone.querySelector('select[id=sel_1_name]')
 
+            //setup change event
+            clone.querySelector("select[id=col_name]").setAttribute("onchange", "table.pop_info("+""+table.unsafe_counter+")")
+
+            //pop table names
             for (var item = 0; item < table.built_obj[table.unsafe_counter][1].length;item ++){
                 var option = document.createElement("option");
-                option.value = table.built_obj[table.unsafe_counter][1][item][1]
+                option.value = item
                 option.text = table.built_obj[table.unsafe_counter][1][item][1]
-                selectbox.appendChild(option);
+                clone.querySelector("select[id=col_name]").appendChild(option);
             }
-            
-            table.unsafe_counter +=1
-            selbox_div.appendChild(selectbox); 
-            clone.querySelector('div.row').appendChild(selbox_div); 
             document.getElementById("tab_content").appendChild(clone); 
+            //pop table info
+            table.pop_info(table.unsafe_counter)
+            table.unsafe_counter +=1
+        },
+
+        pop_info:function(invoker)
+        {
+            let target = document.getElementById("table_"+invoker)
+            let info = target.querySelector("select[id=col_name]").value
+
+        //depopulate all
+        while (target.querySelector("select[id=col_info]").options.length > 0) {
+            target.querySelector("select[id=col_info]").remove(0);
+        }
+        
+        console.log(table.built_obj[invoker][1])
+
+            for (var item = 0; item < table.built_obj[invoker][1][info].length-2;item ++){
+                var option = document.createElement("option");
+                option.value = "ASD"
+                option.text = table.built_obj[invoker][1][info][item+2]
+                target.querySelector("select[id=col_info]").appendChild(option);
+            }
         }
     }
 
@@ -69,6 +89,7 @@
         unsafe_counter:0,
 
     add: function(){
+        //handles safety logic
         if (link.unsafe_counter != 0){
             for (let index = 1; index <= link.unsafe_counter; index++) {
                 var check_table = document.getElementById("link_"+(index-1))
@@ -130,15 +151,43 @@
             return
         }
         subtable.removeAttribute("disabled")
-
+        
+        //populate subtables
         for (var item = 0; item < table.built_obj[subname.value][1].length;item ++){
             var option = document.createElement("option");
             option.value = [subname.value,item]
             option.text = table.built_obj[subname.value][1][item][1]
             subtable.appendChild(option);
         }
-
     },
+    pop_sub_table_info:function(invoker,subtab)
+    {
+        var main_table = document.getElementById("link_"+invoker)
+        var subname = main_table.querySelector("select[id=sel_"+subtab+"_name]")
+        var subtable = main_table.querySelector("select[id=sel_"+subtab+"_data]")
+        //depopulate all but "SELECT ME" option
+        while (subtable.options.length > 1) {
+            subtable.remove(1);
+        }
+        //check that there is a table to pull from or user chose 'None'
+        if (subname.value== '' || subname.value=="None"){
+            subtable.setAttribute("disabled","True")
+            subtable.options[0].selected = true
+            return
+        }
+        subtable.removeAttribute("disabled")
+        
+        //populate subtables
+        for (var item = 0; item < table.built_obj[subname.value][1].length;item ++){
+            var option = document.createElement("option");
+            option.value = [subname.value,item]
+            option.text = table.built_obj[subname.value][1][item][1]
+            subtable.appendChild(option);
+        }
+    },
+
+
+
     remove: function(){
 
         var main_link = document.getElementById("link_"+(link.unsafe_counter-1))
@@ -178,6 +227,7 @@
 },
 act={
     unsafe_counter:0,
+    
 
     add: function(){
         let templateInstance = document.getElementById("act_template");
@@ -199,6 +249,8 @@ act={
         act.unsafe_counter++
         document.getElementById("act_content").appendChild(clone); 
     },
+
+
     pop_sub_table:function(invoker)
     {
         var main_table = document.getElementById("act_"+invoker)

@@ -21,6 +21,11 @@
             <div class = "col">
                 IF YOUR SEEING ME YOU BROKE SOMETHING
             </div>
+            <select class = "col" id = "col_name">
+            </select>
+            <select class = "col" id = "col_info">
+            </select>
+
         </div>
         <hr>
 </template>
@@ -72,8 +77,6 @@
             </input>
         </div>
 </template>
-
-
 
 
 <body onload='generic.startup( {{schema|safe}} , {{bulk|safe}})'>
@@ -145,6 +148,11 @@
                 <!--table content-->
                 <div class = "togg_on" id="table_chunk">
                     <div class = "center row card card-body"id="tab_content">
+                        <div class="row">
+                            <div class ="col">Table Name</div>
+                            <div class ="col">Columns</div>
+                            <div class ="col">Selected Column Info</div>
+                        </div>
                     </div>
                 </div>
                 <hr>
@@ -175,6 +183,14 @@
                 <!--Links content-->
                 <div class = "togg_on" id="link_chunk">
                     <div class = "center row card card-body"id="link_content">
+                        <div class="row">
+                            <div class ="col">LINK ID</div>
+                            <div class ="col">TABLE 1</div>
+                            <div class ="col">TABLE 1 COLUMN</div>
+                            <div class ="col">TABLE 2</div>
+                            <div class ="col">TABLE 2 COLUMN</div>
+                            <div class ="col">TYPE</div>
+                        </div>
                     </div>
                 </div>
                 <hr>
@@ -186,20 +202,28 @@
         <!--ACT-->
         <div>
             <div>
-                <h1>ACTs</h1>
+                <h1>ACT</h1>
                 <p class="no_bottom bg_y">minimum: 1</p>
                 <hr>
                 <!-- change ACT -->
                 <div class="row">
-                    <button type='button' class='col btn btn-success' name='adj_tables_counter_bttn' onclick="act.add()">Add New Action</button>
-                    <button type='button' class='col btn btn-danger' name='adj_tables_counter_bttn' onclick="act.remove()">Remove Last Action</button>
-                    <button type='button' class='col btn btn-info' name='adj_tables_counter_bttn' onclick="generic.togg('act')">Toggle show actions</button>                </div>
+                    <button type='button' hidden class='col btn btn-success' name='adj_tables_counter_bttn' onclick="act.add()">Add New Action (cut)</button>
+                    <button type='button' hidden class='col btn btn-danger' name='adj_tables_counter_bttn' onclick="act.remove()">Remove Last Action (cut)</button>
+                    <button type='button' class='col btn btn-info' name='adj_tables_counter_bttn' onclick="generic.togg('act')">Toggle show actions</button>
+                </div>
                 <hr>
                 <!--end change ACT-->
 
                 <!--ACT content-->
                 <div class = "togg_on" id="act_chunk">
                     <div class = "center row card card-body"id="act_content">
+                        <div class="row">
+                            <div class ="col">ACT ID</div>
+                            <div class ="col">TYPE</div>
+                            <div class ="col">TABLE</div>
+                            <div class ="col">COLUMN</div>
+                            <div class ="col">CONDITION</div>
+                        </div>
                     </div>
                 </div>
                 <hr>
