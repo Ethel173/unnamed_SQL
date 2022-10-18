@@ -59,12 +59,11 @@
 <template id="act_template">
         <div class="row">
             <div class ="col">TABLE ID GOES HERE IN JS</div>
-            <select class = "col" id = "payload">
-                <option value ="None"disabled selected hidden>SELECT ACTION</option>
-                <option value ="None">None</option>
+            <select class = "col" id = "payload" onchange="generic.update_statement()">
+                <option value ="None"disabled selected hidden >SELECT ACTION</option>
                 <option value ="SELECT">Print / Select</option>
-                <option value ="SELECT">update (NYI)</option>
-                <option value ="SELECT">drop (DANGER)(NYI)</option>
+                <option value ="UPDATE">update (NYI)</option>
+                <option value ="DROP">drop (NYI)</option>
             </select>
             <select class = "col" id = "sel_name">
                 <option value ="None"disabled selected hidden>SELECT TABLE</option>
@@ -72,6 +71,7 @@
             </select>
             <select class = "col" id = "sel_data" disabled>
                 <option value =""disabled selected hidden>SELECT TABLE FIRST</option>
+                <option value ="ALL">ALL (*)</option>
             </select>
             <input class = "col" id = "cond" disabled placeholder="SELECT ACTION FIRST">
             </input>
@@ -123,10 +123,14 @@
     </div>
     <!--end debug stats-->
 
-    <div class = "container">
-        
-        <div id="output">
-            OUTPUT: {{final}}
+    <div class = "center row card card-body">
+        <div class="row">
+            <div class="col">
+                OUTPUT:
+            </div>
+            <div class="col" id="output">
+                TURN ON JS
+            </div>
         </div>
         <hr>
 
@@ -161,6 +165,40 @@
             </div>
         </div>
         <!--end tables-->
+
+<!--ACT-->
+<div>
+    <div>
+        <h1>ACT</h1>
+        <p class="no_bottom bg_y">minimum: 1</p>
+        <hr>
+        <!-- change ACT -->
+        <div class="row">
+            <button type='button' hidden class='col btn btn-success' name='adj_tables_counter_bttn' onclick="act.add()">Add New Action (cut)</button>
+            <button type='button' hidden class='col btn btn-danger' name='adj_tables_counter_bttn' onclick="act.remove()">Remove Last Action (cut)</button>
+            <button type='button' class='col btn btn-info' name='adj_tables_counter_bttn' onclick="generic.togg('act')">Toggle show actions</button>
+        </div>
+        <hr>
+        <!--end change ACT-->
+
+        <!--ACT content-->
+        <div class = "togg_on" id="act_chunk">
+            <div class = "center row card card-body"id="act_content">
+                <div class="row">
+                    <div class ="col">ACT ID</div>
+                    <div class ="col">TYPE</div>
+                    <div class ="col">TABLE</div>
+                    <div class ="col">COLUMN</div>
+                    <div class ="col">CONDITION</div>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <!--end ACT content-->
+    </div>
+</div>
+<!--end ACT-->
+
 
         <!--Links-->
         <div>
@@ -199,38 +237,7 @@
         </div>
         <!--end Links-->
 
-        <!--ACT-->
-        <div>
-            <div>
-                <h1>ACT</h1>
-                <p class="no_bottom bg_y">minimum: 1</p>
-                <hr>
-                <!-- change ACT -->
-                <div class="row">
-                    <button type='button' hidden class='col btn btn-success' name='adj_tables_counter_bttn' onclick="act.add()">Add New Action (cut)</button>
-                    <button type='button' hidden class='col btn btn-danger' name='adj_tables_counter_bttn' onclick="act.remove()">Remove Last Action (cut)</button>
-                    <button type='button' class='col btn btn-info' name='adj_tables_counter_bttn' onclick="generic.togg('act')">Toggle show actions</button>
-                </div>
-                <hr>
-                <!--end change ACT-->
-
-                <!--ACT content-->
-                <div class = "togg_on" id="act_chunk">
-                    <div class = "center row card card-body"id="act_content">
-                        <div class="row">
-                            <div class ="col">ACT ID</div>
-                            <div class ="col">TYPE</div>
-                            <div class ="col">TABLE</div>
-                            <div class ="col">COLUMN</div>
-                            <div class ="col">CONDITION</div>
-                        </div>
-                    </div>
-                </div>
-                <hr>
-                <!--end ACT content-->
-            </div>
-        </div>
-        <!--end ACT-->
+        
 
         <button type='submit' class='col btn btn-primary' action='' method='post'>execute</button>
     </div>

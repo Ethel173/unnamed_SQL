@@ -2,7 +2,7 @@
     var generic={
         togg:function(pos){
         var toggle = document.getElementById(pos+'_chunk')
-        console.log("toggle"+ toggle)
+        //console.log("toggle"+ toggle)
         if (toggle.className == 'togg_on')
         {toggle.className = 'togg_off'}
         else
@@ -12,8 +12,9 @@
     debug:function(){
         //console.log("names: ",table.saved_names)
         //console.log("cols: ",table.saved_cols)
-        console.log("build: ",table.built_obj)
+        console.table(table.built_obj)
         //console.log("link: ",link.unsafe_counter)
+        console.table(link.built)
     },
     startup:function(names,cols){
         table.map(names,cols)
@@ -22,8 +23,39 @@
         }
         link.add()
         act.add()
-
+        generic.update_statement()
+    },
+    update_statement:function()
+    {
+        act = document.getElementById("act_0")
+        statement = act.querySelector("select[id=payload]").value
+        tab_name = act.querySelector("select[id=sel_name]").value
+        tab_data = act.querySelector("select[id=sel_data]").value
+        if (generic.failcheck(statement)){
+            console.info("failed statement check")
+            generic.incomplete_statment("Act statement")
+            return
+        }
+        console.info("passed statement check")
+        
+        generic.valid_statment(statement)
+    },
+    failcheck:function(test){
+        if (test == null || test == "None" || test == ""){
+            return true
+        }
+    },
+    incomplete_statment:function(errcode){
+        let out_div = document.getElementById("output")
+        placeholder =" not selected"
+        out_div.innerHTML = errcode+placeholder
+    },
+    valid_statment:function(statement){
+        let out_div = document.getElementById("output")
+        out_div.innerHTML = statement
     }
+
+
     }
 
     var table = {
@@ -31,9 +63,9 @@
         unsafe_counter:0,
         built_obj : [],
         map: function(names,cols){
-            for (var asd in names){
-                table.built_obj.push(names[asd])
-                table.built_obj[asd].push(cols[asd])
+            for (var i in names){
+                table.built_obj.push(names[i])
+                table.built_obj[i].push(cols[i])
             }
         },
 
@@ -69,26 +101,34 @@
         {
             let target = document.getElementById("table_"+invoker)
             let info = target.querySelector("select[id=col_name]").value
-
         //depopulate all
         while (target.querySelector("select[id=col_info]").options.length > 0) {
             target.querySelector("select[id=col_info]").remove(0);
         }
-        
-        console.log(table.built_obj[invoker][1])
+
 
             for (var item = 0; item < table.built_obj[invoker][1][info].length-2;item ++){
                 var option = document.createElement("option");
-                option.value = "ASD"
-                option.text = table.format_arr[item+2] + table.built_obj[invoker][1][info][item+2]
+                option.value = table.built_obj[invoker][1][info][item+2]
+                if (table.built_obj[invoker][1][info][item+2] == 1){
+                    option.text = table.format_arr[item+2] + "Yes"
+                } 
+                else if (table.built_obj[invoker][1][info][item+2] == 0){
+                    option.text = table.format_arr[item+2] + "No"
+                }
+                else{
+                    option.text = table.format_arr[item+2] + table.built_obj[invoker][1][info][item+2]
+                }
                 target.querySelector("select[id=col_info]").appendChild(option);
             }
         }
     }
 
+
     var link = {
         unsafe_counter:0,
-
+        mem_template:{sel1:[],sel1data:[],sel2:[],sel2data:[]},
+        built:[],
     add: function(){
         //handles safety logic
         if (link.unsafe_counter != 0){
@@ -116,8 +156,10 @@
         clone.querySelector('div.col').innerHTML = "link "+link.unsafe_counter
         
         //setup on change event
-        clone.querySelector('select[id=sel_1_name]').setAttribute("onchange", "link.pop_sub_table("+"'"+link.unsafe_counter+"','1')")
-        clone.querySelector('select[id=sel_2_name]').setAttribute("onchange", "link.pop_sub_table("+"'"+link.unsafe_counter+"','2')")
+        clone.querySelector('select[id=sel_1_name]').setAttribute("onchange", "link.pop_sub_table("+"'"+link.unsafe_counter+"','1'),link.mem_update("+link.unsafe_counter+",1,1)")
+        clone.querySelector('select[id=sel_2_name]').setAttribute("onchange", "link.pop_sub_table("+"'"+link.unsafe_counter+"','2'),link.mem_update("+link.unsafe_counter+",2,1)")
+        clone.querySelector('select[id=sel_1_data]').setAttribute("onchange", "link.mem_update("+link.unsafe_counter+",1,2)")
+        clone.querySelector('select[id=sel_2_data]').setAttribute("onchange", "link.mem_update("+link.unsafe_counter+",2,2)")
 
         //(slightly less)lazy fix
         //i have no idea why this needs to be duped but it does
@@ -131,13 +173,16 @@
         option.text = table.built_obj[item][0]
         clone.querySelector('select[id=sel_2_name]').appendChild(option)
     }
-
+    document.getElementById("link_content").appendChild(clone); 
+    link.built.push(link.unsafe_counter)
+    console.table(link.built)
+    link.built[link.unsafe_counter] = link.mem_template
         link.unsafe_counter++
-        document.getElementById("link_content").appendChild(clone); 
     },
 
     pop_sub_table:function(invoker,subtab)
     {
+        generic.update_statement()
         var main_table = document.getElementById("link_"+invoker)
         var subname = main_table.querySelector("select[id=sel_"+subtab+"_name]")
         var subtable = main_table.querySelector("select[id=sel_"+subtab+"_data]")
@@ -163,6 +208,7 @@
     },
     pop_sub_table_info:function(invoker,subtab)
     {
+        generic.update_statement()
         var main_table = document.getElementById("link_"+invoker)
         var subname = main_table.querySelector("select[id=sel_"+subtab+"_name]")
         var subtable = main_table.querySelector("select[id=sel_"+subtab+"_data]")
@@ -190,7 +236,6 @@
 
 
     remove: function(){
-
         var main_link = document.getElementById("link_"+(link.unsafe_counter-1))
         if (main_link.querySelector("select[id=sel_1_name]").value!="None"){
             alert("link "+(link.unsafe_counter-1)+" table 1 has data")
@@ -203,32 +248,19 @@
 
         main_link.remove()
         link.unsafe_counter -= 1
+        generic.update_statement()
     },
-    //abandoned
-    /*
-    check_unlock: function(invoker){
-        if (invoker != 0)
-        {
-            console.log("check_unlock " , invoker)
-            var main_link = document.getElementById("link_"+(invoker-1))
-            var subname1 = main_link.querySelector("select[id=sel_1_name]")
-            var subname2 = main_link.querySelector("select[id=sel_2_name]")
-            if (subname1.value== '' || subname1.value=="None"|| subname2.value== '' || subname2.value=="None"){
-                var unlock = document.getElementById("link_"+(invoker))
-                unlock.querySelector("select[id=sel_1_name]").removeAttribute("disabled")
-                unlock.querySelector("select[id=sel_2_name]").removeAttribute("disabled")
-                return
-            }
-            var unlock = document.getElementById("link_"+(invoker))
-            unlock.querySelector("select[id=sel_1_name]").setAttribute("disabled","True")
-            unlock.querySelector("select[id=sel_2_name]").setAttribute("disabled","True")
-        }
-    }*/
+
+
+    /////HERE
+    mem_update:function(invoker,main,sub){
+    var table = document.getElementById("link_"+invoker)
+    var updater = table.querySelector('select[id=sel_1_name]').value
+    }
 
 },
 act={
     unsafe_counter:0,
-    
 
     add: function(){
         let templateInstance = document.getElementById("act_template");
@@ -236,9 +268,11 @@ act={
         clone.querySelector('div.row').setAttribute("id", "act_"+act.unsafe_counter)
         clone.querySelector('div.col').innerHTML = "act "+act.unsafe_counter
         
+        //idk 
+        //these just cant be called as methods for some reason
         //setup on change events
-        clone.querySelector('select[id=sel_name]').setAttribute("onchange", "act.pop_sub_table("+"'"+act.unsafe_counter+"')")
-        clone.querySelector('select[id=sel_data]').setAttribute("onchange", "act.unlock_cond('"+act.unsafe_counter+"')")
+        clone.querySelector('select[id=sel_name]').setAttribute("onchange", "act_pop_actdata("+""+act.unsafe_counter+")")
+        clone.querySelector('select[id=sel_data]').setAttribute("onchange", "act_unlock_cond('"+act.unsafe_counter+"')")
 
         for (var item = 0; item < table.built_obj.length;item ++){
             var option = document.createElement("option");
@@ -252,41 +286,44 @@ act={
     },
 
 
-    pop_sub_table:function(invoker)
-    {
-        var main_table = document.getElementById("act_"+invoker)
-        var subname = main_table.querySelector("select[id=sel_name]")
-        var subtable = main_table.querySelector("select[id=sel_data]")
+    
+}
 
-        //depopulate all but "SELECT ME" option
-        while (subtable.options.length > 1) {
-            subtable.remove(1);
-        }
-        //check that there is a table to pull from or user chose 'None'
-        if (subname.value== '' || subname.value=="None"){
-            subtable.setAttribute("disabled","True")
-            subtable.options[0].selected = true
-            act.unlock_cond(invoker)
-            return
-        }
-        subtable.removeAttribute("disabled")
-        for (var item = 0; item < table.built_obj[subname.value][1].length;item ++){
-            var option = document.createElement("option");
-            option.value = [subname.value,item]
-            option.text = table.built_obj[subname.value][1][item][1]
-            subtable.appendChild(option);
-        }
-    },
+//i dunno it just needs to be outside act for some reason
+function act_pop_actdata(invoker){
+    generic.update_statement()
+    var main_table = document.getElementById("act_"+invoker)
+    var subname = main_table.querySelector("select[id=sel_name]")
+    var subtable = main_table.querySelector("select[id=sel_data]")
 
-    unlock_cond:function(invoker){
-        var main_table = document.getElementById("act_"+invoker)
-        var check = main_table.querySelector("select[id=sel_name]")
-        var subtable = main_table.querySelector("input")
-        if (check.value== '' || check.value=="None"){
-            subtable.setAttribute("placeholder", subtable.value)
-            subtable.setAttribute("disabled","True")
-            return
-        }
-        subtable.removeAttribute("disabled")
+    //depopulate all but SELECT ME and ALL
+    while (subtable.options.length > 2) {
+        subtable.remove(2);
     }
+    //check that there is a table to pull from or user chose 'None'
+    if (subname.value== '' || subname.value=="None"){
+        subtable.setAttribute("disabled","True")
+        subtable.options[0].selected = true
+        act_unlock_cond(invoker)
+        return
+    }
+    subtable.removeAttribute("disabled")
+    for (var item = 0; item < table.built_obj[subname.value][1].length;item ++){
+        var option = document.createElement("option");
+        option.value = [subname.value,item]
+        option.text = table.built_obj[subname.value][1][item][1]
+        subtable.appendChild(option);
+    }
+}
+function act_unlock_cond(invoker){
+    var main_table = document.getElementById("act_"+invoker)
+    var check = main_table.querySelector("select[id=sel_name]")
+    console.log(check)
+    var subtable = main_table.querySelector("input")
+    if (check.value== '' || check.value=="None"){
+        //subtable.setAttribute("placeholder", subtable.value)
+        subtable.setAttribute("disabled","True")
+        return
+    }
+    subtable.removeAttribute("disabled")
 }
