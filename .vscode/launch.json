@@ -9,6 +9,7 @@
             "type": "python",
             "request": "launch",
             "module": "flask",
+            "console": "internalConsole",
             "env": {
                 "FLASK_APP": "main.py",
                 "FLASK_DEBUG": "1"
@@ -20,6 +21,13 @@
             ],
             "jinja": true,
             "justMyCode": true
-        }
+        },
+        {
+            "name": "Launch localhost",
+            "type": "chrome",
+            "request": "launch",
+            "url": "http://127.0.0.1:5000/",
+            "webRoot": "${workspaceFolder}"
+        },
     ]
 }

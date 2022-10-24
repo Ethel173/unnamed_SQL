@@ -47,7 +47,7 @@
             <select class = "col" id = "sel_2_data" disabled>
                 <option value ="" disabled selected hidden>SELECT TABLE 2</option>
             </select>
-            <select class = "col">
+            <select class = "col" id="type">
                 <option value ="INNER">INNER</option>
                 <option value ="LEFT">LEFT</option>
                 <option value ="RIGHT">RIGHT</option>
@@ -174,8 +174,8 @@
         <hr>
         <!-- change ACT -->
         <div class="row">
-            <button type='button' hidden class='col btn btn-success' name='adj_tables_counter_bttn' onclick="act.add()">Add New Action (cut)</button>
-            <button type='button' hidden class='col btn btn-danger' name='adj_tables_counter_bttn' onclick="act.remove()">Remove Last Action (cut)</button>
+            <button type='button'  class='col btn btn-success' name='adj_tables_counter_bttn' onclick="act2.add()">Add New Action (cut)</button>
+            <button type='button'  class='col btn btn-danger' name='adj_tables_counter_bttn' onclick="act2.remove()">Remove Last Action (cut)</button>
             <button type='button' class='col btn btn-info' name='adj_tables_counter_bttn' onclick="generic.togg('act')">Toggle show actions</button>
         </div>
         <hr>
