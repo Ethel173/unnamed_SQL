@@ -23,12 +23,12 @@
         }
         link.add()
         act2.add()
-        act2.add()
-        generic.update_statement()
+        //dont need this at startup
+        //generic.update_statement()
     },
     update_statement:function()
     {
-        act = document.getElementById("act_0")
+        /*act = document.getElementById("act_0")
         statement = act.querySelector("select[id=payload]").value
         tab_name = act.querySelector("select[id=sel_name]").value
         tab_data = act.querySelector("select[id=sel_data]").value
@@ -36,10 +36,55 @@
             console.info("failed statement check")
             generic.incomplete_statment("Act statement")
             return
+        }*/
+        var rotating_statement = ''
+        //acts loop check logic
+        for (var i = 0; i < act2.built.length; i++){
+            pay_dat = act2.built[i].payload
+            col_dat = act2.built[i].column
+            cond_dat = act2.built[i].cond
+            console.log(col_dat)
+            console.log(col_dat[1])
+            if (generic.failcheck(pay_dat)){
+                console.error("failed statement check")
+                console.error("pass " + i)
+                console.error("payload")
+                return
+            }
+            if (generic.failcheck(col_dat)){
+                console.error("failed statement check")
+                console.error("pass " + i)
+                console.error("column")
+                return
+            }
+            /*if (generic.failcheck(cond_dat)){
+                console.error("failed statement check")
+                console.error("pass " + i)
+                console.error("cond")
+                return
+            }*/
+            console.info("passed statement check pass "+i)
+            console.table(table.built_obj)
+            //append ACT
+            rotating_statement = pay_dat +" "
+            //append primary table
+            if(col_dat[1]=="ALL"){
+                rotating_statement = rotating_statement + "* FROM " + table.built_obj[col_dat[0]][0] + " WHERE " +cond_dat
+            }
+            else{
+                rotating_statement = rotating_statement + table.built_obj[col_dat[0]][1][1][1] + " FROM " + table.built_obj[col_dat[0]][0] + " WHERE " +cond_dat
+            }
+            if(cond_dat != ''){
+                rotating_statement = rotating_statement + " WHERE " +cond_dat
+            }
         }
-        console.info("passed statement check")
+        if(link.has_links==true){
+            rotating_statement = rotating_statement + " JOIN " + "TEST STATEMENT"
+        }
+
+
         
-        generic.valid_statment(statement)
+        generic.valid_statment(rotating_statement)
     },
     failcheck:function(test){
         if (test == null || test == "None" || test == ""){
@@ -127,8 +172,14 @@
 
 
     var link = {
+        /** tracks what link number we are on  */
         unsafe_counter:0,
+        has_links:false,
+        /**
+         * the link table object in memory used to keep track of things 
+         */
         built:[],
+        /**adds a new link block to memory and increments unsafe counter */
     add: function(){
         //handles safety logic
         if (link.unsafe_counter != 0){
@@ -183,11 +234,13 @@
     console.table(link.built)
     link.built[link.unsafe_counter] = []
         link.unsafe_counter++
+        //no check needed for this
+        link.has_links=true
     },
-
+/** regens subtable info on selecting a different table */
     pop_sub_table:function(invoker,subtab)
     {
-        generic.update_statement()
+        //generic.update_statement()
         var main_table = document.getElementById("link_"+invoker)
         var subname = main_table.querySelector("select[id=sel_"+subtab+"_name]")
         var subtable = main_table.querySelector("select[id=sel_"+subtab+"_data]")
@@ -213,7 +266,7 @@
     },
     pop_sub_table_info:function(invoker,subtab)
     {
-        generic.update_statement()
+        //generic.update_statement()
         var main_table = document.getElementById("link_"+invoker)
         var subname = main_table.querySelector("select[id=sel_"+subtab+"_name]")
         var subtable = main_table.querySelector("select[id=sel_"+subtab+"_data]")
@@ -257,11 +310,13 @@
         //log
         console.table(link.built)
         link.unsafe_counter -= 1
+        if (link.unsafe_counter = 0){
+            link.has_links=false
+        }
         generic.update_statement()
     },
 
 
-    /////HERE
     mem_update:function(invoker){
     var table = document.getElementById("link_"+invoker)
     console.log("invoker:" + invoker)
@@ -271,20 +326,21 @@
     link.built[invoker].sel2data = table.querySelector('select[id=sel_2_data]').value
     link.built[invoker].type = table.querySelector('select[id=type]').value
     console.table(link.built)
+    generic.update_statement()
 }
     }
 
     var act2={
         unsafe_counter:0,
+        /**obj in mem with the selected actions, your dumb and setup the info for this in act obj update */
         built:[],
+        /**adds new act to webpage */
         add:function(){
             let templateInstance = document.getElementById("act_template");
             let clone = document.importNode(templateInstance .content, true);
             clone.querySelector('div.row').setAttribute("id", "act_"+act2.unsafe_counter)
             clone.querySelector('div.col').innerHTML = "act "+act2.unsafe_counter
             
-            //idk 
-            //these just cant be called as methods for some reason
             //setup on change events
             clone.querySelector('select[id=payload]').setAttribute("onchange", "act2.obj_update("+act2.unsafe_counter+")")
             clone.querySelector('select[id=sel_name]').setAttribute("onchange", "act2.pop_actdata("+""+act2.unsafe_counter+"),act2.obj_update("+act2.unsafe_counter+")")
@@ -305,7 +361,7 @@
             act2.unsafe_counter++
         },
         pop_actdata:function(invoker){
-            generic.update_statement()
+            //generic.update_statement()
             var main_table = document.getElementById("act_"+invoker)
             var subname = main_table.querySelector("select[id=sel_name]")
             var subtable = main_table.querySelector("select[id=sel_data]")
@@ -324,18 +380,19 @@
             }
             //ALL handler
             var option = document.createElement("option");
-            option.value = [subname.value,"ALL"]
+            option.value = [[subname.value],["ALL"]]
             option.text = "ALL (*)"
             subtable.appendChild(option);
 
             subtable.removeAttribute("disabled")
             for (var item = 0; item < table.built_obj[subname.value][1].length;item ++){
                 var option = document.createElement("option");
-                option.value = [subname.value,item]
+                option.value = [[subname.value],[item]]
                 option.text = table.built_obj[subname.value][1][item][1]
                 subtable.appendChild(option);
             }
         },
+
         unlock_cond:function(invoker){
             var main_table = document.getElementById("act_"+invoker)
             var check = main_table.querySelector("select[id=sel_name]")
@@ -359,6 +416,7 @@
             act2.built[invoker].column = table.querySelector('[id=sel_data]').value
             act2.built[invoker].cond = table.querySelector('[id=cond]').value
             console.table(act2.built)
+            generic.update_statement()
         },
         remove: function(){
             if (act2.unsafe_counter==1){
@@ -367,6 +425,7 @@
             var main_link = document.getElementById("act_"+(act2.unsafe_counter-1))
             console.log(main_link)
             //fure me problem
+            //future you ignoring this since reverse feature creep is locking it to 1 act for assignment
             /*if (main_link.querySelector("select[id=sel_1_name]").value!="None"){
                 alert("link "+(act2.unsafe_counter-1)+" table 1 has data")
                 return
