@@ -67,11 +67,18 @@
             </select>
             <select class = "col" id = "sel_name">
                 <option value ="None"disabled selected hidden>SELECT TABLE</option>
-                <option value ="None">None</option>
+                <option value ="None" disabled hidden>None</option>
             </select>
+
             <select class = "col" id = "sel_data" disabled>
                 <option value =""disabled selected hidden>SELECT TABLE FIRST</option>
                 <option value ="ALL">ALL (*)</option>
+            </select>
+            <input class = "col" id="cond_flip" type="checkbox">
+        </input>
+            <select class = "col" id = "cond_type" disabled>
+                <option selected value ="EQUAL">EQUAL</option>
+                <option value ="LIKE">LIKE</option>
             </select>
             <input class = "col" id = "cond" disabled placeholder="SELECT ACTION FIRST">
             </input>
@@ -189,7 +196,9 @@
                     <div class ="col">TYPE</div>
                     <div class ="col">TABLE</div>
                     <div class ="col">COLUMN</div>
+                    <div class ="col">HAS FILTER</div>
                     <div class ="col">CONDITION</div>
+                    <div class ="col">VALUE</div>
                 </div>
             </div>
         </div>
