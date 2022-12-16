@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+< lang="en">
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -69,18 +69,21 @@
                 <option value ="None"disabled selected hidden>SELECT TABLE</option>
                 <option value ="None" disabled hidden>None</option>
             </select>
-
             <select class = "col" id = "sel_data" disabled>
                 <option value =""disabled selected hidden>SELECT TABLE FIRST</option>
                 <option value ="ALL">ALL (*)</option>
             </select>
             <input class = "col" id="cond_flip" type="checkbox">
-        </input>
+            </input>
+            <select class = "col" id = "type" disabled onchange="generic.update_statement()">
+                <option value ="AND">AND</option>
+                <option value ="OR">OR</option>
+            </select>
             <select class = "col" id = "cond_type" disabled>
                 <option selected value ="EQUAL">EQUAL</option>
                 <option value ="LIKE">LIKE</option>
             </select>
-            <input class = "col" id = "cond" disabled placeholder="SELECT ACTION FIRST">
+            <input class = "col" id = "cond" disabled placeholder="NO FILTER">
             </input>
         </div>
 </template>
@@ -193,10 +196,11 @@
             <div class = "center row card card-body"id="act_content">
                 <div class="row">
                     <div class ="col">ACT ID</div>
-                    <div class ="col">TYPE</div>
+                    <div class ="col">SELECT TYPE</div>
                     <div class ="col">TABLE</div>
                     <div class ="col">COLUMN</div>
                     <div class ="col">HAS FILTER</div>
+                    <div class ="col">FILTER TYPE</div>
                     <div class ="col">CONDITION</div>
                     <div class ="col">VALUE</div>
                 </div>

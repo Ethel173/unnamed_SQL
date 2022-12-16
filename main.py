@@ -10,6 +10,8 @@ from jinja2 import Template
 
 
 app = Flask(__name__)
+
+#i forgot what this is for but past you needed this for ???? reasons
 app.secret_key = b'_5asdsaw%2xec]/'
 
 
@@ -23,42 +25,24 @@ def create_connection(path):
 
     return connection
 
+
+#edit me to point to the DB to be used
 db = create_connection("dbs/finance.db")
 
 pointer = db.cursor()
 
 #sqlite_master is hidden internal table
-#future you is going to hate dealing with this
-#schema = pointer.execute("SELECT * FROM sqlite_master WHERE type='table' AND name != 'sqlite_sequence';").fetchall()
 names = pointer.execute("SELECT tbl_name FROM sqlite_master WHERE type='table' AND name != 'sqlite_sequence';").fetchall()
 sql = pointer.execute("SELECT sql FROM sqlite_master WHERE type='table' AND name != 'sqlite_sequence';").fetchall()
-#schema = pointer.execute("SELECT * FROM sqlite_master WHERE type='table' AND name != 'sqlite_sequence';").fetchone()
-
-#print(str(schema[0]))
-
-#test= pointer.execute("select * from pragma table_info("+str(schema[0][2])+");")
-#test= schema.execute("pragma table_list;").fetchall()
-
-#print(names)
-
-#print (sql)
-#test = re.findall("((?<=\()|(?<=\\n *)|(?<=, *))\w*(?= )",str(sql))
-#test = re.findall("((?:\()|(?:\\n *)|(?:, *))\w*(?= )",str(sql))
 
 
 tab_builder=[]
 for table in range(len(names)):
-    
-    #future me look into what the fuck PRAGMA actually is
-    #print("TABLE: ",names[table][0])
     test = pointer.execute("PRAGMA table_info("+names[table][0]+")").fetchall()
     tab_builder.append(test)
-    #this doesnt work but keep this here incase for the regex
-    #test = re.findall("((?<=\()\w+)|((?<=, *)\w+)|((?<=\\n *)\w+)",str(sql[table]))
-    
-    #print(test)
 
-#print("TABLE BUILDER: ",tab_builder)
+
+
 @app.route("/",methods = ['POST', 'GET'])
 def hello_world():
     if request.method == 'GET':

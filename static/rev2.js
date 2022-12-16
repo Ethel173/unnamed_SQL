@@ -22,7 +22,7 @@
         for (item in names){
             table.add()
         }
-        link.add()
+        //link.add()
         act2.add()
 
         //dont need this at startup
@@ -32,29 +32,34 @@
         generic.incomplete_statment("ACT table Not Completed")
     },
 
+    //A
+    //TODO 
+    //REALLY SHOULD ADD THAT CAP TO THIS
     background_tracker :  65,
-    background_tables : {},
-    main_table : "",
-    frontend_tables : [],
-    join_links : [],
+
+    /**building this in try_add
+    * * table
+    * * * alias 
+    * * * colums
+    */
+    background_tables : {"ZZZ_hidden_length" : 0},
+    /**links\
+     * holds [TAB1,TAB2] pairs
+    */
+    join_links : {},
 
 
     update_statement:function()
     {
-        
-    //add ACT AS 'A'
-    //add link tables to loaded tabs AS 'B','C','D' etc
-    //your gonna do this backwards KV pairs with table as Key
-    
     //clear new batch    
     generic.reset_tables()
     //act section
     try{
         for (var i = 0; i < act2.unsafe_counter; i++)
         {
-            table_sel = act2.built[i]["column"][0]
+            table_sel = act2.built[i]["column"]
             generic.try_add_to_background(table_sel)
-            generic.main_table = table_sel
+            //generic.main_table = table_sel
             //console.log("background tables:")
             //console.table(generic.background_tables)
         }
@@ -64,77 +69,71 @@
             return
         }
     //links section
+    //need to replace this with subroutine
     try{
         for (var i = 0; i < link.unsafe_counter; i++)
         {
             sel1 = link.built[i].sel1data[0]
             sel2 = link.built[i].sel2data[0]
-
+            //i dont like this
             if (sel1 == undefined || sel2 == undefined||sel1 == "None" || sel2 == "None"||sel1 == "" || sel2 == ""){
                 return
             }
-
-            generic.try_add_to_background(sel1)
-            generic.frontend_tables.push(sel1)
             generic.join_links.push(link.built[i].sel1data[1])
-
-            generic.try_add_to_background(sel2)
-            generic.frontend_tables.push(sel2)
             generic.join_links.push(link.built[i].sel2data[1])
-            
         }
     }
         catch{
             generic.incomplete_statment("Table Link Not Completed")
             return
         }
+        //debug stuff
         console.info("background tables:")
         console.table(generic.background_tables)
 
-    //add link joins
-    // you can chain those
-
-
-        //past me wtf is this
-        //DONT DELETE ME YET
+        var rotating_statement = "SELECT "
         
-        var rotating_statement = "SELECT"
 
-        if(act2.built[0].column[1]=="ALL"){
-            rotating_statement = rotating_statement + " * FROM " + generic.main_table + " AS " + generic.background_tables[generic.main_table]
-            
+        //chunk for columns
+        lazy_col_flag = 0
+        for (var INDEX = 0; INDEX <= generic.background_tables.ZZZ_hidden_length; INDEX ++)
+        {
+            var table_key = Object.keys(generic.background_tables)[INDEX]
+            if (table_key == "ZZZ_hidden_length" || table_key == "" || table_key == undefined)
+            {
+                continue
+            }
+
+        //appaend cols
+        for ( var COL_INDEX = 0; COL_INDEX < generic.background_tables[table_key].columns.length; COL_INDEX ++)
+        {
+            if(lazy_col_flag ==1){
+                rotating_statement = rotating_statement + " , "
+            }
+            rotating_statement = rotating_statement + generic.background_tables[table_key].alias_name + "."+ generic.background_tables[table_key].columns[COL_INDEX] 
+            lazy_col_flag = 1 
         }
-        else{
-            rotating_statement = rotating_statement + " " + generic.background_tables[generic.main_table] + "." + act2.built[0].column[1] + " FROM " + generic.main_table + " AS " + generic.background_tables[generic.main_table]
+    }
+        //FROM STATEMENT
+        rotating_statement = rotating_statement +" FROM "
+        //chunk for tables
+        lazy_table_flag = 0
+        for (var INDEX = 0; INDEX <= generic.background_tables.ZZZ_hidden_length; INDEX ++)
+        {
+            var table_key = Object.keys(generic.background_tables)[INDEX]
+            if (table_key == "ZZZ_hidden_length" || table_key == "" || table_key == undefined)
+            {
+                continue
+            }
+        //appaends the table and nickname
+        if(lazy_table_flag == 1){
+            rotating_statement = rotating_statement + " , "
         }
-
-            /*if (generic.failcheck(cond_dat)){
-                console.error("failed statement check")
-                console.error("pass " + i)
-                console.error("cond")
-                return
-            }
-            console.info("passed statement check pass "+i)
-            console.table(table.built_obj)
-            //append ACT
-            rotating_statement = pay_dat +" "
-            //append primary table
-            if(col_dat[1]=="ALL"){
-                rotating_statement = rotating_statement + "* FROM " + table.built_obj[col_dat[0]][0]
-            }
-            else{
-                rotating_statement = rotating_statement + table.built_obj[col_dat[0]][1][1][1] + " FROM " + table.built_obj[col_dat[0]][0]
-            }
-            if(cond_dat != ''||cond_dat != 'None'||cond_dat != null){
-                rotating_statement = rotating_statement + " WHERE " +cond_dat
-            }
+            rotating_statement = rotating_statement + table_key
+            rotating_statement = rotating_statement +" AS " 
+            rotating_statement = rotating_statement + generic.background_tables[table_key].alias_name
+            lazy_table_flag = 1
         }
-        if(link.has_links==true){
-            rotating_statement = rotating_statement + " JOIN " + "TEST STATEMENT"
-        }*/
-
-
-        
         generic.valid_statment(rotating_statement)
     },
     failcheck:function(test){
@@ -154,22 +153,55 @@
     },
     reset_tables:function(){
         generic.background_tracker = 65
-        generic.background_tables = {}
-        //this doesnt actually need to be cleared?
-        generic.main_table = ""
-        generic.frontend_tables = []
-        generic.join_links = []
+        generic.background_tables = {"ZZZ_hidden_length" : 0}
+        generic.join_links = {}
     },
+    //controlls subroutines
     try_add_to_background:function(tab_name){
+        //pass the table name
+        generic.try_add_table(tab_name[0])
+        //pass the tab obj
+        generic.try_add_col(tab_name)
+        console.log(generic.background_tables)
+    },
+    //sub to add table and format new stuff 
+    try_add_table:function(tab_name){
         if (tab_name in generic.background_tables){
             console.warn(tab_name + " already loaded into tables")
             return
         }
-        generic.background_tables[tab_name] = String.fromCharCode(generic.background_tracker)
+        generic.background_tables[tab_name] = {}
+        generic.background_tables[tab_name].alias_name = String.fromCharCode(generic.background_tracker)
+        generic.background_tables[tab_name].columns = []
+        generic.background_tables.ZZZ_hidden_length += 1
         generic.background_tracker += 1
+        //if overflow from ('Z') bump to 97 ("a")
+        if (generic.background_tracker ==91){
+            generic.background_tracker = 97
+        }
+        //if overflow from ('z') throw error
+        if (generic.background_tracker == 123){
+            alert("there is no reason you need 52 different tables in one querry")
+            alert("fix your code, im not supporting that")
+            generic.background_tracker = 65
+        }
+    },
+    //sub to add the sel colums
+    try_add_col:function(tab_name){
+        if (tab_name[1] == undefined){
+            return
+        }
+        if (tab_name[1] in generic.background_tables[tab_name[0]].columns){
+            console.warn(tab_name[1] + " already loaded into subtables")
+            return
+        }
+        generic.background_tables[tab_name[0]]["columns"].push(tab_name[1])
+        
+    },
+    //SR to handle join links
+    link_joiner:function(link_input){
+        //WHAT THE FUCK GOES HERE AGAIN
     }
-
-
     }
 
     var table = {
@@ -402,7 +434,14 @@
 
     var act2={
         unsafe_counter:0,
-        /**obj in mem with the selected actions, your dumb and setup the info for this in act obj update */
+        /**obj in mem with the selected actions, your dumb and setup the info for this in act obj update
+         * * backend
+         * * column
+         * * cond
+         * * has_cond
+         * * payload
+         * * type
+         */
         built:[],
         /**adds new act to webpage */
         add:function(){
@@ -410,11 +449,35 @@
             let clone = document.importNode(templateInstance .content, true);
             clone.querySelector('div.row').setAttribute("id", "act_"+act2.unsafe_counter)
             clone.querySelector('div.col').innerHTML = "act "+act2.unsafe_counter
-            
+
+            //act 0 edge case
+            if (act2.unsafe_counter == 0){
+                clone.querySelector('select[id=type]').setAttribute("Disabled", "true")
+                while (clone.querySelector('select[id=type]').options.length > 0) {
+                    clone.querySelector('select[id=type]').options.remove(0);
+                }
+                var option = document.createElement("option");
+                option.value = "0_index"
+                option.text = "NONE"
+                clone.querySelector('select[id=type]').appendChild(option);
+            }
+            else{
+                clone.querySelector('select[id=payload]').setAttribute("Disabled", "true")
+                    clone.querySelector('select[id=payload]').innerHTML = ""
+                var option = document.createElement("option");
+                option.value = "PASS"
+                option.text = "NONE"
+                clone.querySelector('select[id=payload]').appendChild(option);
+            }
+
+
+
+
             //setup on change events
             clone.querySelector('select[id=payload]').setAttribute("onchange", "act2.obj_update("+act2.unsafe_counter+")")
             clone.querySelector('select[id=sel_name]').setAttribute("onchange", "act2.pop_actdata("+""+act2.unsafe_counter+"),act2.obj_update("+act2.unsafe_counter+")")
             clone.querySelector('select[id=sel_data]').setAttribute("onchange", "act2.obj_update("+act2.unsafe_counter+")")
+            //move
             clone.querySelector('input[id=cond_flip]').setAttribute("onchange", "act2.unlock_cond('"+act2.unsafe_counter+"'),act2.obj_update("+act2.unsafe_counter+")")
             clone.querySelector('[id=cond]').setAttribute("onblur", "act2.obj_update("+act2.unsafe_counter+")")
     
@@ -479,14 +542,22 @@
             //console.log(check)
             var prefix_sub = main_table.querySelector("[id=cond_type]")
             var subtable = main_table.querySelector("[id=cond]")
+            var fitler_type = main_table.querySelector("[id=type]")
             if (check.checked == false){
                 //subtable.setAttribute("placeholder", subtable.value)
-                subtable.setAttribute("disabled","True")
                 prefix_sub.setAttribute("disabled","True")
+                subtable.setAttribute("disabled","True")
+                fitler_type.setAttribute("disabled","True")
+                subtable.setAttribute("placeholder","NO FILTER")
                 return
             }
+            subtable.setAttribute("placeholder","TYPE HERE")
             subtable.removeAttribute("disabled")
             prefix_sub.removeAttribute("disabled")
+            if (invoker > 0)
+            {    
+                fitler_type.removeAttribute("disabled")
+            }
         },
         obj_update:function(invoker){
             //console.table(act2.built)
@@ -494,8 +565,8 @@
             var table = document.getElementById("act_"+invoker)
             //console.log("invoker:" + invoker)
             //console.log(table)
+            act2.built[invoker].backend = table.querySelector('[id=type]').value
             act2.built[invoker].payload = table.querySelector('[id=payload]').value
-            //act2.built[invoker].table = table.querySelector('[id=sel_name]').value
             act2.built[invoker].column = table.querySelector('[id=sel_data]').value.split(",")
             act2.built[invoker].has_cond = table.querySelector('[id=cond_flip]').checked
             act2.built[invoker].type = table.querySelector('[id=cond_type]').value
@@ -509,8 +580,8 @@
             }
             var main_link = document.getElementById("act_"+(act2.unsafe_counter-1))
             console.log(main_link)
-            //fure me problem
-            //future you ignoring this since reverse feature creep is locking it to 1 act for assignment
+            //cut
+            //check for data to prevent accidental delete
             /*if (main_link.querySelector("select[id=sel_1_name]").value!="None"){
                 alert("link "+(act2.unsafe_counter-1)+" table 1 has data")
                 return
